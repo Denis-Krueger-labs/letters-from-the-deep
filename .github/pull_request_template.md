@@ -59,15 +59,6 @@ Describe the expected and observed result.
 
 <!-- Add screenshots, GIFs, or short recordings for visual changes. Remove when not applicable. -->
 
-## AI Assistance
-
-- [ ] No AI assistance was used
-- [ ] AI assistance was used
-
-When AI assistance was used, briefly describe what it helped with and how the result was reviewed:
-
-> 
-
 ## Reviewer Notes
 
 Add limitations, known issues, scene or prefab ownership notes, and possible follow-up tasks here.
