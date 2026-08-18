@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace LettersFromTheDeep.Dialogue;
 
 public class DialogueNode
