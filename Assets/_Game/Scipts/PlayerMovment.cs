@@ -1,9 +1,4 @@
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 
 public class PlayerMovment : MonoBehaviour
 {
@@ -15,16 +10,11 @@ public class PlayerMovment : MonoBehaviour
 
 
     [Header("Setup")]
-    [SerializeField]
-    private Rigidbody2D rigidbodyPlayer;
-    [SerializeField]
-    private CircleCollider2D colliderforGoundCheck;
-    [SerializeField]
-    private LayerMask whatIsGround;
-    [SerializeField]
-    private LayerMask whatIsPlatform;
-    [SerializeField]
-    private GameObject holderForDirectionFlip;
+    [SerializeField] private Rigidbody2D rigidbodyPlayer;
+    [SerializeField] private CircleCollider2D colliderforGoundCheck;
+    [SerializeField] private LayerMask whatIsGround;
+    [SerializeField] private LayerMask whatIsPlatform;
+    [SerializeField] private GameObject holderForDirectionFlip;
 
 
 
@@ -43,12 +33,14 @@ public class PlayerMovment : MonoBehaviour
         {
             rigidbodyPlayer = this.gameObject.GetComponent<Rigidbody2D>();
         }
+        distanceOfGoundCheck = colliderforGoundCheck.radius;
     }
 
-    //Physics-based checks are used to determine whether the player is on the ground or on a platform.
+    /// <summary>
+    /// Physics-based checks are used to determine whether the player is on the ground or on a platform.
+    /// </summary>
     private void FixedUpdate()
-    {
-        distanceOfGoundCheck = colliderforGoundCheck.radius;
+    { 
         if (colliderforGoundCheck.IsTouchingLayers(whatIsGround))  // es wird abgefragt om in diesem Array elemente existieren
         {
             // wenn das der Fall ist dann ist unser Spieler am Boden
@@ -66,54 +58,8 @@ public class PlayerMovment : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //velocity = Vector2.zero;
-
-        float localeVariableFuerInput = 0f;
-        localeVariableFuerInput = Input.GetAxis("Horizontal");
-
-        
-
-        if (localeVariableFuerInput > 0f)
-        {
-            velocity.x = horizontalSpeed * Time.deltaTime;
-        }
-        else if (localeVariableFuerInput < 0f)
-        {
-            velocity.x = -horizontalSpeed * Time.deltaTime;
-        }
-
-        bool isJumping = false;
-        isJumping = Input.GetButtonDown("Jump");
-
-        //if (isJumping && isGounded)
-        //{
-        //    //velocity.y = jumpSpeed;
-        //    //rigidbodyPlayer.AddForceY(jumpSpeed);
-        //    //AddForceToPlayer(jumpingPower);
-        //}
-
-        //if (isGounded)
-        //{
-        //    velocity.y = -0.02f * Time.deltaTime;
-        //}
-        //else
-        //{
-        //    velocity += gravity * Time.deltaTime * Time.deltaTime;
-        //}
-        if (isJumping)
-        {
-            //velocity.y += jumpingPower;
-            AddForceToPlayer(jumpingPower * Time.deltaTime);
-        }
-
-        //velocity.y = velocity.y + Physics.gravity.y;
-        //velocity.y += Physics.gravity.y * Time.deltaTime;
-
-        //velocity *= Time.deltaTime;
-
-        Physics2D.gravity = gravity;
-        this.transform.Translate(velocity.x, velocity.y, 0f);
-
+        CalculationOfMovementHorizontal();
+        CalculationOfMovementVertical();
     }
 
     /// <summary>
@@ -136,19 +82,69 @@ public class PlayerMovment : MonoBehaviour
             // ToDo: Switch to the official player object, because "this" isn't always fitting.
             this.transform.SetParent(null);
         }
+
     }
 
-    public void AddForceToPlayer(float recivedBostUP)
+    /// <summary>
+    /// The horizontal input (for example, "A" and "D") is multiplied by "horizontalSpeed".
+    /// Together with "Time.deltaTime", this object is moved using "transform.Translate".
+    /// <para> ToDo: Integrating Unity's new input system </para>
+    /// <para> ToDo: Switch to the official player object, because "this" isn't always fitting. </para>
+    /// </summary>
+    private void CalculationOfMovementHorizontal()
     {
-        rigidbodyPlayer.AddForceY(recivedBostUP, ForceMode2D.Impulse);
+        float localeVariableFuerInput = 0f;
+        localeVariableFuerInput = Input.GetAxis("Horizontal");
+
+        if (localeVariableFuerInput != 0f)
+        {
+            velocity.x = horizontalSpeed * localeVariableFuerInput;
+        }
+        else
+        {
+            velocity.x = 0f;
+        }
+
+        this.transform.Translate(velocity.x * Time.deltaTime, 0f, 0f);
     }
 
-    public void AddForceToPlayer(Vector2 recivedForce)
+    /// <summary>
+    ///         A value is constantly calculated to move the player downwards: 
+    /// <para>  when the player is on the ground, -0.01f 
+    /// <br>    limited to a maximum of -0.02f to prevent excessive forces  </br> </para>  
+    /// <para>  and gravity.y * Time.deltaTime when they are not on the ground  </para>
+    /// <para>  When the jump input(e.g., the spacebar) is triggered, "jumpingPower" is also factored into the calculation.     </para>
+    /// <para>  Together with "Time.deltaTime", this object is moved using "transform.Translate".   </para>
+    /// <para>  ToDo: Integrating Unity's new input system  </para>
+    /// <para>  ToDo: Switch to the official player object, because "this" isn't always fitting.    </para>
+    /// </summary>
+    private void CalculationOfMovementVertical()
     {
-        rigidbodyPlayer.AddForce(recivedForce);
+
+        bool isJumping = false;
+        isJumping = Input.GetButtonDown("Jump");
+
+        if (isGounded)
+        {
+            velocity.y += -0.01f;
+            velocity.y = Mathf.Clamp(velocity.y, -0.02f, float.MaxValue);
+        }
+        else
+        {
+            velocity.y += gravity.y * Time.deltaTime;
+        }
+        if (isJumping)
+        {
+            velocity.y += jumpingPower;
+        }
+
+        this.transform.Translate(0f, velocity.y * Time.deltaTime, 0f);
     }
 
-    //TODo: change to maby OnDrawGizmosSelected
+    /// <summary>
+    /// Currently used to visualize the ground check area.
+    /// maby ToDo: change to OnDrawGizmosSelected
+    /// </summary>
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.blue;

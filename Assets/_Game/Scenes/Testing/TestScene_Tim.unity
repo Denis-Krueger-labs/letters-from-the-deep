@@ -266,7 +266,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -291,7 +291,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovment
   horizontalSpeed: 5
-  jumpingPower: 300
+  jumpingPower: 2
   gravity: {x: 0, y: -4.905}
   rigidbodyPlayer: {fileID: 215727363}
   colliderforGoundCheck: {fileID: 1519735264}
@@ -307,6 +307,7 @@ MonoBehaviour:
   isOnPlatform: 0
   platform: {fileID: 0}
   distanceOfGoundCheck: 0.05
+  velocityXDamping: 0.25
 --- !u!1 &962778320
 GameObject:
   m_ObjectHideFlags: 0
