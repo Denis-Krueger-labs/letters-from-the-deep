@@ -1,13 +1,15 @@
-namespace LettersFromTheDeep.Dialogue;
-
-public class DialogueChoice
+namespace LettersFromTheDeep.Dialogue
 {
-    public string Text { get; }
-    public string? NextNodeId { get; }
 
-    public DialogueChoice(string text, string? nextNodeId)
+    public class DialogueChoice
     {
-        Text = text;
-        NextNodeId = nextNodeId;
+        public string Text { get; }
+        public string? NextNodeId { get; }
+
+        public DialogueChoice(string text, string? nextNodeId)
+        {
+            Text = text;
+            NextNodeId = nextNodeId;
+        }
     }
 }

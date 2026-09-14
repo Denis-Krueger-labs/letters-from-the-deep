@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 
-namespace LettersFromTheDeep.Dialogue;
+namespace LettersFromTheDeep.Dialogue
+{
 
 public class Dialogue
 {
@@ -32,4 +33,5 @@ public class Dialogue
 
         return node;
     }
+}
 }
