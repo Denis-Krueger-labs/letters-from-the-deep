@@ -15,6 +15,12 @@ public class PlayerMovment : MonoBehaviour
     [SerializeField] private LayerMask whatIsGround;
     [SerializeField] private LayerMask whatIsPlatform;
     [SerializeField] private GameObject holderForDirectionFlip;
+    [Range(0f, 1f)]
+    [SerializeField] private float multiplicationZeroedVelocity = 0.5f;
+
+
+
+    [SerializeField] private int JumpCounterMax = 2;
 
 
 
@@ -25,6 +31,7 @@ public class PlayerMovment : MonoBehaviour
     [SerializeField] private bool isOnPlatform;
     [SerializeField] private GameObject platform;
     [SerializeField] private float distanceOfGoundCheck = 0.05f;
+    [SerializeField] private int JumpCounterAtMoment;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -53,6 +60,11 @@ public class PlayerMovment : MonoBehaviour
         }
 
         PlatformCheck();
+
+        if (isGounded || isOnPlatform)
+        {
+            resetJumpCounter();
+        }
     }
 
     // Update is called once per frame
@@ -108,6 +120,11 @@ public class PlayerMovment : MonoBehaviour
         this.transform.Translate(velocity.x * Time.deltaTime, 0f, 0f);
     }
 
+    public void ReciveSlideInput(Vector3 vectorFromSlide)
+    {
+        this.transform.Translate(vectorFromSlide * Time.deltaTime);
+    }
+
     /// <summary>
     ///         A value is constantly calculated to move the player downwards: 
     /// <para>  when the player is on the ground, -0.01f 
@@ -133,12 +150,25 @@ public class PlayerMovment : MonoBehaviour
         {
             velocity.y += gravity.y * Time.deltaTime;
         }
-        if (isJumping)
+
+        if (isJumping && JumpCounterAtMoment < JumpCounterMax)
         {
+            JumpCounterAtMoment++;
+
+            if (velocity.y < 0f && multiplicationZeroedVelocity != 0)
+            {
+                velocity.y += Mathf.Abs( velocity.y) * multiplicationZeroedVelocity; 
+            }
+
             velocity.y += jumpingPower;
         }
 
         this.transform.Translate(0f, velocity.y * Time.deltaTime, 0f);
+    }
+
+    private void resetJumpCounter()
+    {
+         JumpCounterAtMoment = 0;
     }
 
     /// <summary>
