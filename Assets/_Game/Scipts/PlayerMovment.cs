@@ -48,7 +48,8 @@ public class PlayerMovment : MonoBehaviour
     /// </summary>
     private void FixedUpdate()
     { 
-        if (colliderforGoundCheck.IsTouchingLayers(whatIsGround))  // es wird abgefragt om in diesem Array elemente existieren
+        PlatformCheck();
+        if (isOnPlatform || colliderforGoundCheck.IsTouchingLayers(whatIsGround))  // es wird abgefragt om in diesem Array elemente existieren
         {
             // wenn das der Fall ist dann ist unser Spieler am Boden
             isGounded = true;
@@ -58,8 +59,6 @@ public class PlayerMovment : MonoBehaviour
             // wenn das nicht unser Fall ist dann ist unser Spieler nicht am Boden
             isGounded = false;
         }
-
-        PlatformCheck();
 
         if (isGounded || isOnPlatform)
         {
@@ -86,12 +85,14 @@ public class PlayerMovment : MonoBehaviour
             isOnPlatform = true;
             Collider2D platformCollider = Physics2D.OverlapCircle(colliderforGoundCheck.transform.position, distanceOfGoundCheck, whatIsPlatform);
             // ToDo: Switch to the official player object, because "this" isn't always fitting.
-            this.transform.SetParent(platformCollider.transform);
+            platform = platformCollider.transform.gameObject;
+            this.transform.SetParent(platform.transform);
         }
         else
         {
             isOnPlatform = false;
             // ToDo: Switch to the official player object, because "this" isn't always fitting.
+            platform = null;
             this.transform.SetParent(null);
         }
 
