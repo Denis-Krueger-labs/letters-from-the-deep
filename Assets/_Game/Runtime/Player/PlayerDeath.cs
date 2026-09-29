@@ -11,6 +11,11 @@ public class PlayerDeath : MonoBehaviour
         rigidbodyPlayer = GetComponent<Rigidbody2D>();
     }
 
+    public void SetRespawnPoint(Transform newRespawnPoint)
+    {
+        respawnPoint = newRespawnPoint;
+    }
+
     public void Die()
     {
         if (respawnPoint == null)
