@@ -17,6 +17,8 @@ public class PlayerMovment : MonoBehaviour
     [SerializeField] private GameObject holderForDirectionFlip;
     [Range(0f, 1f)]
     [SerializeField] private float multiplicationZeroedVelocity = 0.5f;
+    [SerializeField] private GameObject graphic;
+        
 
 
 
@@ -41,6 +43,18 @@ public class PlayerMovment : MonoBehaviour
             rigidbodyPlayer = this.gameObject.GetComponent<Rigidbody2D>();
         }
         distanceOfGoundCheck = colliderforGoundCheck.radius;
+
+        if (!graphic)
+        {
+            for (int i = 0; i < this.transform.childCount; i++)
+            {
+                if (this.transform.GetChild(i).gameObject.name.Contains("graphic"))
+                {
+                    graphic = this.transform.GetChild(i).gameObject;
+                }
+            }
+            
+        }
     }
 
     /// <summary>
@@ -71,6 +85,7 @@ public class PlayerMovment : MonoBehaviour
     {
         CalculationOfMovementHorizontal();
         CalculationOfMovementVertical();
+        FlipGraphic();
     }
 
     /// <summary>
@@ -170,6 +185,25 @@ public class PlayerMovment : MonoBehaviour
     private void resetJumpCounter()
     {
          JumpCounterAtMoment = 0;
+    }
+
+    private void FlipGraphic()
+    {
+        if (!graphic)
+        {
+            return;
+        }
+        Vector3 localScaleForCalculation = new Vector3(Mathf.Abs(graphic.transform.localScale.x),
+                                                        graphic.transform.localScale.y,
+                                                        graphic.transform.localScale.z);
+        if (velocity.x <0)
+        {
+            graphic.transform.localScale = new Vector3( localScaleForCalculation.x * -1f, localScaleForCalculation.y, localScaleForCalculation.z);
+        }
+        else
+        {
+            graphic.transform.localScale = localScaleForCalculation;
+        }
     }
 
     /// <summary>

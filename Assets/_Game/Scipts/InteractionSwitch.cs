@@ -23,16 +23,19 @@ public class InteractionSwitch : MonoBehaviour
     [Header("Please do not change anything. This area is only for checking values.")]
     [SerializeField] private BoxCollider2D colliderAreaOfEffect;
     [SerializeField] private bool PlayerInCollider;
+    [SerializeField] private bool InteractionState = false;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        CheckSwitchGraphic();
     }
 
     // ToDo: Ensure better input detection
     void Update()
     {
+
         if (PlayerInCollider && Input.GetKeyDown(KeyCode.E))
         {
             TriggerInteraction();
@@ -42,6 +45,25 @@ public class InteractionSwitch : MonoBehaviour
     private void TriggerInteraction()
     {
         scriptOffInteractionSwitch.ReciveInteractionTrigger();
+        CheckSwitchGraphic();
+    }
+
+    private void CheckSwitchGraphic()
+    {
+        if (!graphicForSwitchOff || !graphicForSwitchOn)
+        {
+            return;
+        }
+        if (InteractionState)
+        {
+            graphicForSwitchOn.SetActive(true);
+            graphicForSwitchOff.SetActive(false);
+        }
+        else
+        {
+            graphicForSwitchOff.SetActive(true);
+            graphicForSwitchOn.SetActive(false);
+        }
     }
 
     //ToDo: use a better system to detect the player 
