@@ -2,27 +2,32 @@ using UnityEngine;
 
 public class PlayerDeath : MonoBehaviour
 {
-    [SerializeField] private Transform respawnPoint;
-
     private Rigidbody2D rigidbodyPlayer;
+    private Vector3 respawnPosition;
 
     private void Awake()
     {
         rigidbodyPlayer = GetComponent<Rigidbody2D>();
+
+        // Starting position is the default respawn point.
+        respawnPosition = transform.position;
     }
 
     public void SetRespawnPoint(Transform newRespawnPoint)
     {
-        respawnPoint = newRespawnPoint;
+        if (newRespawnPoint == null)
+        {
+            return;
+        }
+
+        respawnPosition = newRespawnPoint.position;
+
+        Debug.Log($"Respawn point updated to: {respawnPosition}");
     }
 
     public void Die()
     {
-        if (respawnPoint == null)
-        {
-            Debug.LogWarning("No respawn point assigned.");
-            return;
-        }
+        Debug.Log($"Player died. Respawning at: {respawnPosition}");
 
         if (rigidbodyPlayer != null)
         {
@@ -30,6 +35,8 @@ public class PlayerDeath : MonoBehaviour
             rigidbodyPlayer.angularVelocity = 0f;
         }
 
-        transform.position = respawnPoint.position;
+        transform.position = respawnPosition;
+
+        Physics2D.SyncTransforms();
     }
 }

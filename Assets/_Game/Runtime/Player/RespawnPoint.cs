@@ -4,12 +4,22 @@ public class RespawnPoint : MonoBehaviour
 {
     private void OnTriggerEnter2D(Collider2D other)
     {
-        PlayerDeath playerDeath = other.GetComponentInParent<PlayerDeath>();
+        Debug.Log($"Checkpoint touched by: {other.gameObject.name}");
 
-        if (playerDeath != null)
+        PlayerDeath playerDeath =
+            other.GetComponentInParent<PlayerDeath>();
+
+        if (playerDeath == null)
         {
-            playerDeath.SetRespawnPoint(transform);
-            Debug.Log($"Respawn point updated to: {gameObject.name}");
+            Debug.LogWarning(
+                $"No PlayerDeath found on {other.gameObject.name} or its parents."
+            );
+
+            return;
         }
+
+        playerDeath.SetRespawnPoint(transform);
+
+        Debug.Log($"Checkpoint activated: {gameObject.name}");
     }
 }
