@@ -34,6 +34,7 @@ public class PlayerMovment : MonoBehaviour
     [SerializeField] private GameObject platform;
     [SerializeField] private float distanceOfGoundCheck = 0.05f;
     [SerializeField] private int JumpCounterAtMoment;
+    [SerializeField] private bool isJumping = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -85,7 +86,7 @@ public class PlayerMovment : MonoBehaviour
     {
         CalculationOfMovementHorizontal();
         CalculationOfMovementVertical();
-        FlipGraphic();
+        FlipDirection();
     }
 
     /// <summary>
@@ -154,7 +155,6 @@ public class PlayerMovment : MonoBehaviour
     private void CalculationOfMovementVertical()
     {
 
-        bool isJumping = false;
         isJumping = Input.GetButtonDown("Jump");
 
         if (isGounded)
@@ -187,23 +187,56 @@ public class PlayerMovment : MonoBehaviour
          JumpCounterAtMoment = 0;
     }
 
-    private void FlipGraphic()
+    private void FlipDirection()
     {
-        if (!graphic)
+        if (!graphic && !holderForDirectionFlip)
         {
             return;
         }
-        Vector3 localScaleForCalculation = new Vector3(Mathf.Abs(graphic.transform.localScale.x),
-                                                        graphic.transform.localScale.y,
-                                                        graphic.transform.localScale.z);
-        if (velocity.x <0)
+
+        if (graphic)
         {
-            graphic.transform.localScale = new Vector3( localScaleForCalculation.x * -1f, localScaleForCalculation.y, localScaleForCalculation.z);
+            Vector3 localScaleForCalculation = new Vector3(Mathf.Abs(graphic.transform.localScale.x),
+                                                            graphic.transform.localScale.y,
+                                                            graphic.transform.localScale.z);
+            if (velocity.x < 0)
+            {
+                graphic.transform.localScale = new Vector3(localScaleForCalculation.x * -1f, localScaleForCalculation.y, localScaleForCalculation.z);
+            }
+            else
+            {
+                graphic.transform.localScale = localScaleForCalculation;
+            }
         }
-        else
+
+        if (holderForDirectionFlip)
         {
-            graphic.transform.localScale = localScaleForCalculation;
+            Vector3 localScaleForCalculation = new Vector3(Mathf.Abs(holderForDirectionFlip.transform.localScale.x),
+                                                            holderForDirectionFlip.transform.localScale.y,
+                                                            holderForDirectionFlip.transform.localScale.z);
+            if (velocity.x < 0)
+            {
+                holderForDirectionFlip.transform.localScale = new Vector3(localScaleForCalculation.x * -1f, localScaleForCalculation.y, localScaleForCalculation.z);
+            }
+            else
+            {
+                holderForDirectionFlip.transform.localScale = localScaleForCalculation;
+            }
         }
+    }
+
+    public Vector2 GetVelocity()
+    {
+        return velocity;
+    }
+
+    public bool GetIsGounded()
+    {
+        return isGounded;
+    }
+    public bool GetIsJumping()
+    {
+        return isJumping;
     }
 
     /// <summary>
